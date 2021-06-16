@@ -1,5 +1,6 @@
 package id.smkn4.pbo.studentData.forms;
 
+import id.smkn4.pbo.studentData.Constant;
 import id.smkn4.pbo.studentData.classes.DatabaseConnection;
 
 import javax.swing.*;
@@ -30,7 +31,13 @@ public class DataSiswa extends JFrame {
         this.setLocationRelativeTo(null);
         this.pack();
 
-        koneksi = DatabaseConnection.getKoneksi("localhost", "3306", "root", "", "db_sekolah");
+        koneksi = DatabaseConnection.getKoneksi(
+                Constant.SQL_DATA.HOST,
+                Constant.SQL_DATA.PORT,
+                Constant.SQL_DATA.USER,
+                Constant.SQL_DATA.PASSWORD,
+                Constant.SQL_DATA.DATABASE
+        );
         showData();
     }
 
@@ -48,7 +55,7 @@ public class DataSiswa extends JFrame {
 
         try {
             Statement stmt = koneksi.createStatement();
-            String query = "SELECT * FROM t_siswa";
+            String query = "SELECT * FROM " + Constant.SQL_DATA.TABLE;
             ResultSet rs = stmt.executeQuery(query);
             int no = 1;
             while (rs.next()) {
