@@ -1,9 +1,11 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
 group 'id.smkn4.pbo.studentData'
 version '0.1-DEVELOPMENT'
+mainClassName = 'id.smkn4.pbo.studentData.forms.DataSiswa'
 
 repositories {
     mavenCentral()
@@ -17,4 +19,16 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': mainClassName
+        )
+    }
+}
+
+compileJava {
+    options.compilerArgs += ["-Aproject=${project.group}/${project.name}"]
 }
