@@ -44,18 +44,26 @@ public class DataSiswa extends JFrame {
                 Constant.SQL_DATA.DATABASE
         );
 
-        btnTambah.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                addRecord();
-            }
-        });
-
         tableSiswa.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 selectedRow = tableSiswa.getSelectedRow();
+            }
+        });
+
+        btnRefresh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                dtm.getDataVector().removeAllElements();
+                showData();
+            }
+        });
+
+        btnTambah.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                addRecord();
             }
         });
 
