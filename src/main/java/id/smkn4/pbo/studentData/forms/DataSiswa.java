@@ -8,6 +8,10 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.StyleContext;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,6 +27,7 @@ public class DataSiswa extends JFrame {
     private JButton btnHapus;
 
     private final Connection koneksi;
+    private int selectedRow;
 
     public DataSiswa(String title) {
         super(title);
@@ -38,6 +43,29 @@ public class DataSiswa extends JFrame {
                 Constant.SQL_DATA.PASSWORD,
                 Constant.SQL_DATA.DATABASE
         );
+
+        btnTambah.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                addRecord();
+            }
+        });
+
+        tableSiswa.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                selectedRow = tableSiswa.getSelectedRow();
+            }
+        });
+
+        btnHapus.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                deleteSelectedRecord();
+            }
+        });
+
         showData();
     }
 
@@ -72,6 +100,30 @@ public class DataSiswa extends JFrame {
         }
 
         tableSiswa.setModel(dtm);
+    }
+
+    public void addRecord() {
+        ManageData tambahData = new ManageData(this, true);
+        tambahData.setVisible(true);
+    }
+
+    public void deleteSelectedRecord() {
+        String selectedNIS = tableSiswa.getValueAt(selectedRow, 1).toString();
+
+        try {
+            Statement stmt = koneksi.createStatement();
+            String query = "DELETE FROM " + Constant.SQL_DATA.TABLE + " WHERE nis LIKE '" + selectedNIS + "';";
+            int code = stmt.executeUpdate(query);
+            if (code == 1) {
+                JOptionPane.showMessageDialog(null, "Data berhasil dihapus");
+                dtm.getDataVector().removeAllElements();
+                showData();
+            } else {
+                JOptionPane.showMessageDialog(null, "Data gagal dihapus");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     {
@@ -109,7 +161,7 @@ public class DataSiswa extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         panelMain.add(btnTambah, gbc);
         btnEdit = new JButton();
-        btnEdit.setText("Udah");
+        btnEdit.setText("Ubah");
         gbc = new GridBagConstraints();
         gbc.gridx = 3;
         gbc.gridy = 2;
